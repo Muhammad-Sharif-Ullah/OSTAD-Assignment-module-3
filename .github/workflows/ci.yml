@@ -27,10 +27,11 @@ jobs:
 
     - name: Run tests
       run: npm test -- --reporter mocha-junit-reporter --reporter-options mochaFile=results/test-results.xml
-     
+      # You can change this to your specific testing framework and command
+      # Here, it uses Mocha as an example, generating the test results in XML format.
 
     - name: Upload test results as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: results/test-results.xml  # Path to the test result file
@@ -54,14 +55,14 @@ jobs:
         echo "Deploying to production environment... Below is the actual code for the deployment."
         
         # Export environment variables for the SSH session
-        # export APPLICATION_PATH_LOCATION=$APPLICATION_PATH_LOCATION
-        # export USER=$USER
-        # export SERVER_IP=$SERVER_IP
+        export APPLICATION_PATH_LOCATION=$APPLICATION_PATH_LOCATION
+        export USER=$USER
+        export SERVER_IP=$SERVER_IP
 
         # SSH into the server and run the deployment script
-        # ssh -i $SSH_PRIVATE_KEY $USER@$SERVER_IP << EOF
-        # cd $APPLICATION_PATH_LOCATION
-        # git pull origin main
-        # npm install
-        # pm2 restart my-app
-        # EOF
+        ssh -i $SSH_PRIVATE_KEY $USER@$SERVER_IP << EOF
+        cd $APPLICATION_PATH_LOCATION
+        git pull origin main
+        npm install
+        pm2 restart my-app
+        EOF
