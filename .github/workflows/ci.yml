@@ -27,8 +27,7 @@ jobs:
 
     - name: Run tests
       run: npm test -- --reporter mocha-junit-reporter --reporter-options mochaFile=results/test-results.xml
-      # You can change this to your specific testing framework and command
-      # Here, it uses Mocha as an example, generating the test results in XML format.
+     
 
     - name: Upload test results as artifact
       uses: actions/upload-artifact@v2
