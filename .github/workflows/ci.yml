@@ -26,36 +26,14 @@ jobs:
     - name: Install dependencies
       run: npm ci --prefer-offline
 
-    - name: Check for test script
-      id: check-test-script
-      run: |
-        if npm run | grep -q "test"; then
-          echo "has-test-script=true" >> $GITHUB_OUTPUT
-        else
-          echo "has-test-script=false" >> $GITHUB_OUTPUT
-        fi
-
     - name: Run tests
-      if: steps.check-test-script.outputs.has-test-script == 'true'
       run: |
         mkdir -p test-results
         npm test -- --reporter mocha-junit-reporter --reporter-options mochaFile=test-results/results.xml
 
-    - name: Warn if no tests are defined
-      if: steps.check-test-script.outputs.has-test-script == 'false'
-      run: |
-        echo "::warning::No test script found in package.json. Consider adding tests to ensure code quality."
-        echo "To add a basic test script, include this in your package.json:"
-        echo '{
-          "scripts": {
-            "test": "echo \"No tests specified\" && exit 0"
-          }
-        }'
-        exit 0
-
     - name: Upload test results
       uses: actions/upload-artifact@v4
-      if: always() && steps.check-test-script.outputs.has-test-script == 'true'
+      if: always()
       with:
         name: test-results
         path: test-results/results.xml
